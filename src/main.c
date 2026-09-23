@@ -40,5 +40,5 @@ int main(void)
     printf("\n========= TEST REPORT =========\n\n");
     printf("[REPORT] total [%zu] | passed ["klGreen"%zu"klNormal"] | failed ["klRed"%zu"klNormal"] | crashed ["klRed"%zu"klNormal"]\n", results[kl_TOTAL], results[kl_GOOD], results[kl_FAILED], results[kl_CRASHED]);
     printf("[REPORT] Took [%zu] milliseconds\n", kl_monotonic() - start);
-    return 0;
+    return results[kl_TOTAL] - results[kl_GOOD];
 }

@@ -18,7 +18,8 @@ target_include_directories(kronklab-obj
 )
 
 if(MSVC)
-    target_compile_options(kronklab-obj PRIVATE /W3 /O2)
+    # (/O2 and the /RTC1 of a Debug build exclude each other: error D8016)
+    target_compile_options(kronklab-obj PRIVATE /W3 $<$<NOT:$<CONFIG:Debug>>:/O2>)
 else()
     target_compile_options(kronklab-obj PRIVATE -Wall -Wextra -O3)
 endif()
@@ -43,8 +44,14 @@ target_link_libraries(kronklab-shared
 
 add_library(kronklab ALIAS kronklab-static)
 
+# With MSVC the import library of the shared one is kronklab.lib too: Ninja refuses two rules for one file
+if(MSVC)
+    set(kronklab_STATIC_NAME kronklab_static)
+else()
+    set(kronklab_STATIC_NAME kronklab)
+endif()
 set_target_properties(kronklab-static PROPERTIES
-    OUTPUT_NAME kronklab
+    OUTPUT_NAME ${kronklab_STATIC_NAME}
 )
 
 set_target_properties(kronklab-shared PROPERTIES

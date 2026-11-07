@@ -30,11 +30,17 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
+  <a href="https://github.com/kronkorp">
+    <img src="images/kronkcorp-k.svg" alt="Kronk Corp logo" width="200" align="middle">
+  </a>
+  &emsp;
+  <img src="images/separator.svg" alt="" width="1" height="170" align="middle">
+  &emsp;
   <a href="https://github.com/kronkorp/kronklab">
-    <img src="images/kronklab.jpg" alt="Logo" width="200">
+    <img src="images/kronklab.jpg" alt="KronkLab logo" width="200" align="middle">
   </a>
 
-<h3 align="center">KronkNet</h3>
+<h3 align="center">KronkLab</h3>
 
   <p align="center">
     A light test framework in C
@@ -68,7 +74,13 @@
         <li><a href="#installation">Installation</a></li>
       </ul>
     </li>
-    <li><a href="#usage">Usage</a></li>
+    <li>
+      <a href="#usage">Usage</a>
+      <ul>
+        <li><a href="#writing-tests">Writing tests</a></li>
+        <li><a href="#benchmarks">Benchmarks</a></li>
+      </ul>
+    </li>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
     <li><a href="#contact">Contact</a></li>
@@ -80,9 +92,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-<!-- [![Product Name Screen Shot][product-screenshot]](https://example.com) -->
-
-LOREM IPSUM...
+KronkLab is a light test and benchmark framework in C. Declare tests with `Test(suite, name)`, check them with the `Assert*` macros, and run the executable to get a report. A test that crashes (segfault...) is reported as failed and doesn't stop the others.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -110,7 +120,15 @@ apt install cmake
 
 ### Installation
 
-LOREM IPSUM...
+```sh
+git clone https://github.com/kronkorp/kronklab.git
+cd kronklab
+cmake -S . -B build
+cmake --build build
+sudo cmake --install build
+```
+
+Builds on Linux and Windows (MSVC or MinGW). Link against `kronklab` and `#include "kronklab/kronklab.h"`.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -119,7 +137,38 @@ LOREM IPSUM...
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-LOREM IPSUM...
+### Writing tests
+
+```c
+#include "kronklab/kronklab.h"
+
+Test(math, addition)
+{
+    AssertEq(1 + 1, 2, "1 + 1 should be 2");
+}
+
+Test(str, equal)
+{
+    AssertStrEq("kronk", "kronk", "strings differ");
+}
+```
+
+Available assertions: `Assert`, `AssertEq`, `AssertNe`, `AssertLe`, `AssertGe`, `AssertNull`, `AssertNotNull`, `AssertStrEq`, `AssertStrNe`. The message takes `printf` arguments.
+
+### Benchmarks
+
+```c
+Bench(perf, loop)
+{
+    BenchStart();
+    for (size_t i = 0; i < 10000000; ++i)
+        ;
+    BenchEnd();
+    BenchReport();
+}
+```
+
+See [`tests/test.c`](tests/test.c) for more.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

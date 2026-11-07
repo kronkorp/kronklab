@@ -17,11 +17,11 @@ target_include_directories(kronklab-obj
         $<INSTALL_INTERFACE:include>
 )
 
-target_compile_options(kronklab-obj PRIVATE
-    -Wall
-    -Wextra
-    -O3
-)
+if(MSVC)
+    target_compile_options(kronklab-obj PRIVATE /W3 /O2)
+else()
+    target_compile_options(kronklab-obj PRIVATE -Wall -Wextra -O3)
+endif()
 
 add_library(kronklab-static STATIC
     $<TARGET_OBJECTS:kronklab-obj>
@@ -50,6 +50,8 @@ set_target_properties(kronklab-static PROPERTIES
 set_target_properties(kronklab-shared PROPERTIES
     OUTPUT_NAME kronklab
 )
+
+set_target_properties(kronklab-shared PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
 set_target_properties(kronklab-obj PROPERTIES
     POSITION_INDEPENDENT_CODE ON

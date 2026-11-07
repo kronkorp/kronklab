@@ -39,6 +39,19 @@
     #define AssertStrEq(str1, str2, msg, ...) AssertEq(strcmp(str1, str2), 0, msg, ##__VA_ARGS__)
     #define AssertStrNe(str1, str2, msg, ...) AssertNe(strcmp(str1, str2), 0, msg, ##__VA_ARGS__)
 
+#ifdef _WIN32
+    #define __kl_SECTION ".kl$m"
+#else
+    #define __kl_SECTION "__kl_funcStruct"
+#endif
+
+    /* Places a static registry entry in section `sec` (MSVC and GCC/Clang spellings). */
+    #ifdef _MSC_VER
+        #define __kl_PLACE(sec) __pragma(section(sec, read)) __declspec(allocate(sec)) __declspec(align(8))
+    #else
+        #define __kl_PLACE(sec) __attribute__((section(sec), aligned(8), used, retain))
+    #endif
+
     typedef void (*__kl_testFunc)(void);
 
     enum __kl_testType {
@@ -55,7 +68,7 @@
 
     #define Test(suite, name) \
         void suite##_##name##_impl(void); \
-        __attribute__((section("__kl_funcStruct"), aligned(8), used, retain)) \
+        __kl_PLACE(__kl_SECTION) \
         static const struct __kl_funcStruct suite##_##name##_meta = { \
             #suite, #name, __kl_test, &suite##_##name##_impl \
         }; \
@@ -63,14 +76,16 @@
 
     #define Bench(suite, name) \
         void suite##_##name##_impl(void); \
-        __attribute__((section("__kl_funcStruct"), aligned(8), used, retain)) \
+        __kl_PLACE(__kl_SECTION) \
         static const struct __kl_funcStruct suite##_##name##_meta = { \
             #suite, #name, __kl_bench, &suite##_##name##_impl \
         }; \
         void suite##_##name##_impl(void)
 
+#ifndef _WIN32
     extern struct __kl_funcStruct __start___kl_funcStruct;
     extern struct __kl_funcStruct __stop___kl_funcStruct;
+#endif
 
     typedef uint64_t timestamp;
 

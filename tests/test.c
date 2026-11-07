@@ -1,7 +1,6 @@
 #include "kronklab/kronklab.h"
 #include <stddef.h>
 #include <stdio.h>
-#include <unistd.h>
 
 Test(test1, test_assert_eq)
 {

@@ -4,16 +4,36 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
-#include <sys/wait.h>
 
-int main(void)
+#ifdef _WIN32
+#include <windows.h>
+__kl_PLACE(".kl$a") const struct __kl_funcStruct __kl_sentinel_begin = {"", "", __kl_test, NULL};
+__kl_PLACE(".kl$z") const struct __kl_funcStruct __kl_sentinel_end = {"", "", __kl_test, NULL};
+#endif
+
+int main(int argc, char **argv)
 {
-    struct __kl_funcStruct *current = &__start___kl_funcStruct;
-    struct __kl_funcStruct *end = &__stop___kl_funcStruct;
+    struct __kl_funcStruct *current = KL_BEGIN;
+    struct __kl_funcStruct *end = KL_END;
     char *csuite = NULL;
     unsigned long results[4] = {0, 0, 0, 0};
-    timestamp start = kl_monotonic();
+    timestamp start;
+
+#ifdef _WIN32
+    if (argc == 3 && !strcmp(argv[1], kl_CHILD_FLAG)) {
+        current[strtoul(argv[2], NULL, 10)].func();
+        return 0;
+    }
+    SetConsoleOutputCP(CP_UTF8);
+    HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
+    DWORD mode;
+    if (GetConsoleMode(h, &mode)) {
+        SetConsoleMode(h, mode | 0x4); /* ENABLE_VIRTUAL_TERMINAL_PROCESSING: ANSI colors */
+    }
+#endif
+    (void)argc;
+    (void)argv;
+    start = kl_monotonic();
 
     while (current < end) {
         if (!csuite || strncmp(current->suite, csuite, 32)) {

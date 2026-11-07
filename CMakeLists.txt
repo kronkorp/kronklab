@@ -67,3 +67,11 @@ install(TARGETS kronklab-static kronklab-shared
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/kronklab
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
+
+# The sample suite has 1 failing and 1 crashing test on purpose: check the report, not the exit code.
+enable_testing()
+add_executable(kronklab-tests tests/test.c)
+target_link_libraries(kronklab-tests PRIVATE kronklab-static)
+add_test(NAME kronklab-tests COMMAND kronklab-tests)
+set_tests_properties(kronklab-tests PROPERTIES
+    PASS_REGULAR_EXPRESSION "total \\[5\\] \\| passed \\[[^]]*3")

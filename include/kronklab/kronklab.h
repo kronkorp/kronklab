@@ -52,6 +52,14 @@
         #define __kl_PLACE(sec) __attribute__((section(sec), aligned(8), used, retain))
     #endif
 
+    /* A `static const` that nothing refers to is dropped by MSVC's C++ compiler before it reaches its section: with C
+     * linkage (external, and so kept) the entries of a C++ test file are in the registry. */
+    #if defined(_MSC_VER) && defined(__cplusplus)
+        #define __kl_LINKAGE extern "C"
+    #else
+        #define __kl_LINKAGE static
+    #endif
+
     typedef void (*__kl_testFunc)(void);
 
     enum __kl_testType {
@@ -69,7 +77,7 @@
     #define Test(suite, name) \
         void suite##_##name##_impl(void); \
         __kl_PLACE(__kl_SECTION) \
-        static const struct __kl_funcStruct suite##_##name##_meta = { \
+        __kl_LINKAGE const struct __kl_funcStruct suite##_##name##_meta = { \
             #suite, #name, __kl_test, &suite##_##name##_impl \
         }; \
         void suite##_##name##_impl(void)
@@ -77,7 +85,7 @@
     #define Bench(suite, name) \
         void suite##_##name##_impl(void); \
         __kl_PLACE(__kl_SECTION) \
-        static const struct __kl_funcStruct suite##_##name##_meta = { \
+        __kl_LINKAGE const struct __kl_funcStruct suite##_##name##_meta = { \
             #suite, #name, __kl_bench, &suite##_##name##_impl \
         }; \
         void suite##_##name##_impl(void)

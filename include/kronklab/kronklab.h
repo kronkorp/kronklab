@@ -76,16 +76,14 @@
 
     #define Test(suite, name) \
         void suite##_##name##_impl(void); \
-        __kl_PLACE(__kl_SECTION) \
-        __kl_LINKAGE const struct __kl_funcStruct suite##_##name##_meta = { \
+        __kl_LINKAGE __kl_PLACE(__kl_SECTION) const struct __kl_funcStruct suite##_##name##_meta = { \
             #suite, #name, __kl_test, &suite##_##name##_impl \
         }; \
         void suite##_##name##_impl(void)
 
     #define Bench(suite, name) \
         void suite##_##name##_impl(void); \
-        __kl_PLACE(__kl_SECTION) \
-        __kl_LINKAGE const struct __kl_funcStruct suite##_##name##_meta = { \
+        __kl_LINKAGE __kl_PLACE(__kl_SECTION) const struct __kl_funcStruct suite##_##name##_meta = { \
             #suite, #name, __kl_bench, &suite##_##name##_impl \
         }; \
         void suite##_##name##_impl(void)

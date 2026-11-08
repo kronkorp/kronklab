@@ -45,7 +45,7 @@ int main(int argc, char **argv)
         csuite = current->suite;
         switch (current->type) {
             case __kl_test:
-                klInfo("Running test n°%.2zu: %s:%s\n", results[0] + 1, current->suite, current->name);
+                klInfo("Running test n°%.2lu: %s:%s\n", results[0] + 1, current->suite, current->name);
                 run_test(current, results);
                 ++results[0];
                 break;
@@ -58,7 +58,7 @@ int main(int argc, char **argv)
         ++current;
     }
     printf("\n========= TEST REPORT =========\n\n");
-    printf("[REPORT] total [%zu] | passed ["klGreen"%zu"klNormal"] | failed ["klRed"%zu"klNormal"] | crashed ["klRed"%zu"klNormal"]\n", results[kl_TOTAL], results[kl_GOOD], results[kl_FAILED], results[kl_CRASHED]);
+    printf("[REPORT] total [%lu] | passed ["klGreen"%lu"klNormal"] | failed ["klRed"%lu"klNormal"] | crashed ["klRed"%lu"klNormal"]\n", results[kl_TOTAL], results[kl_GOOD], results[kl_FAILED], results[kl_CRASHED]);
     printf("[REPORT] Took [%zu] milliseconds\n", kl_monotonic() - start);
     return results[kl_TOTAL] - results[kl_GOOD];
 }
